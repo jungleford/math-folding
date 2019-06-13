@@ -1,5 +1,5 @@
 import Constants from './constants';
-import Utils from '@jungleford/simple-utils/src/js/utils';
+import Utils from '@jungleford/simple-utils/lib/js/utils';
 
 /**
  * Define a matrix [[1, 2, ..., 2^k], ..., [..., n]], that `n = 4 ^ k`, and a series of methods to compute folding result.

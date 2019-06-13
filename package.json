@@ -10,14 +10,18 @@
     "url": "git://github.com/jungleford/math-folding.git"
   },
   "keywords": [
-    "utils"
+    "math",
+    "math-folding",
+    "algorithm"
   ],
   "scripts": {
-    "build": "webpack --config ./webpack.babel.js",
-    "test": "./node_modules/.bin/karma start --single-run"
+    "compile": "babel --presets es2015,stage-0 -d lib/ src/",
+    "build": "webpack --config ./webpack.babel.prod.js",
+    "test": "./node_modules/.bin/mocha-webpack --webpack-config webpack.babel.dev.js test/js/**/*.spec.js",
+    "karma": "./node_modules/.bin/karma start --single-run"
   },
   "dependencies": {
-    "@jungleford/simple-utils": "~0.0.1",
+    "@jungleford/simple-utils": "~0.0.3",
     "babel-polyfill": "^6.26.0",
     "lodash": "^4.0.0"
   },
@@ -44,6 +48,7 @@
     "karma-mocha": "^1.3.0",
     "karma-webpack": "^3.0.5",
     "mocha": "^5.2.0",
+    "mocha-webpack": "2.0.0-beta.0",
     "webpack": "^4.11.1",
     "webpack-cli": "^3.0.8",
     "webpack-dev-middleware": "^3.1.3"

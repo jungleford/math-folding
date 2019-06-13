@@ -65,6 +65,3 @@ typings/
 
 # Webpack build results
 dist/
-
-# Babel compile dist
-lib/

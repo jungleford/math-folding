@@ -1,4 +1,4 @@
-# math-folding
+# math-folding ![npm (scoped)](https://img.shields.io/npm/v/@jungleford/math-folding.svg)
 
 Research for number folding algorithms.
 
@@ -26,12 +26,18 @@ So far, this bundle includes two algorithms:
 
 ## Testing
 
-You need a mocha or karma command line utility, for this package, mocha@5.2.0 and karma@3.1.4 are recommended.
+You need a mocha or karma command line utility, for this package, mocha@5.2.0, mocha-webpack@2.0.0-beta.0 and karma@3.1.4 are recommended.
 
 Inline script is available:
 
 ```bash
 $ npm test
+```
+
+or
+
+```bash
+$ npm run karma
 ```
 
 ## Related Projects

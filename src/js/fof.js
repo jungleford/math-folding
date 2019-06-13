@@ -1,5 +1,5 @@
 import Constants from './constants';
-import Utils from '@jungleford/simple-utils/src/js/utils';
+import Utils from '@jungleford/simple-utils/lib/js/utils';
 
 /**
  * Define an array [1, 2, ..., n]` that `n = 2 ^ k`, and a series of methods to compute folding result.
