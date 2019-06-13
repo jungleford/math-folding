@@ -11,11 +11,6 @@ const babelQuery = {
   presets: [
     'babel-preset-es2015',
     'babel-preset-stage-0'
-  ],
-  'plugins': [
-    ['transform-decorators-legacy'],
-    ['babel-plugin-transform-runtime'],
-    ['babel-plugin-add-module-exports']
   ]
 };
 

@@ -10,7 +10,7 @@ $ npm install
 
 # Background: 对折序列问题（Number Folding Problem）
 
-You can read the Chinese edition at [here](https://github.com/jungleford/math-folding-react).
+You can read a detailed analysis (Chinese edition only) at [here](https://github.com/jungleford/math-folding-react).
 
 Currently I only resolved First-Order Folding (FOF) and Second-Order Folding (SOF).
 

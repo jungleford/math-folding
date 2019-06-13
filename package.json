@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "compile": "babel --presets es2015,stage-0 -d lib/ src/",
-    "build": "webpack --config ./webpack.babel.prod.js",
+    "build": "npm run compile && webpack --config ./webpack.babel.prod.js",
     "test": "./node_modules/.bin/mocha-webpack --webpack-config webpack.babel.dev.js test/js/**/*.spec.js",
     "karma": "./node_modules/.bin/karma start --single-run"
   },
@@ -27,19 +27,13 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.18.0",
+    "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-transform-decorators-legacy": "^1.3.5",
-    "babel-plugin-transform-dev-warning": "^0.1.1",
-    "babel-plugin-transform-replace-object-assign": "^0.2.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-preset-stage-1": "^6.24.1",
     "babel-register": "^6.26.0",
-    "babel-runtime": "^6.18.0",
+    "babel-runtime": "^6.26.0",
     "chai": "^4.2.0",
     "karma": "^3.1.4",
     "karma-babel-preprocessor": "^7.0.0",
@@ -50,7 +44,6 @@
     "mocha": "^5.2.0",
     "mocha-webpack": "2.0.0-beta.0",
     "webpack": "^4.11.1",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-middleware": "^3.1.3"
+    "webpack-cli": "^3.0.8"
   }
 }
