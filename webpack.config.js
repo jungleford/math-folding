@@ -22,7 +22,7 @@ const babelQuery = {
 export default {
   mode: 'development',
   devtool: 'source-map',
-  entry: ['babel-polyfill', path.join(root, 'src', 'js')],
+  entry: ['babel-polyfill', path.join(root, 'src', 'js', 'index.js')],
   output: {
     path: path.join(root, 'dist', 'js'),
     filename: 'bundle.js'
@@ -30,7 +30,7 @@ export default {
   module: {
     rules: [
       {
-        test: /\.js?$/,
+        test: /\.js$/,
         loader: 'babel',
         query: babelQuery,
         include: clientInclude,
@@ -43,7 +43,6 @@ export default {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      $: 'jquery',
       _: 'lodash',
       assert: 'assert'
     })

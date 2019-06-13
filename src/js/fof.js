@@ -15,7 +15,7 @@ import Utils from '@jungleford/simple-utils/src/js/utils';
  * @constructor
  */
 function Folding(power, original) {
-  assert(typeof power === 'number' && power > 0, '`power` must be an positive integer.');
+  assert(_.isInteger(power) && power > 0, '`power` must be an positive integer.');
 
   this.power = power;
   this.count = 2 ** power; // n = 2 ^ k
