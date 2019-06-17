@@ -1,5 +1,4 @@
 import Constants from './constants';
-import Utils from '@jungleford/simple-utils/lib/js/utils';
 
 /**
  * Define an array [1, 2, ..., n]` that `n = 2 ^ k`, and a series of methods to compute folding result.
@@ -23,7 +22,7 @@ function Folding(power, original) {
   _.each(Constants.algorithm, alg => {
     this.cache[alg] = {};
   });
-  this.reset(original);
+  reset(this, original);
 }
 
 /**
@@ -72,10 +71,15 @@ function doFoldingByRecursive(piles, steps) {
  * This algorithm will not save steps.
  *
  * @param power the exponent of the number of the elements.
+ * @param original (Optional) the original array. If undefined, use the natural number sequence.
  * @return {number[]} the array of the folding result.
  */
-function doFoldingByFormula(power) {
-  assert(typeof power === 'number' && power >= 1, '`power` must larger than 1.\nYour power is: ' + power);
+function doFoldingByFormula(power, original) {
+  assert(_.isInteger(power) && power >= 1, '`power` must larger than 1.\nYour power is: ' + power);
+  if (original !== undefined) {
+    assert(_.isArray(original) && original.length === 2 ** power,
+      '`original` must be an array with ' + (2 ** power) + ' elements.\nYour `original` is: ' + original);
+  }
 
   let result = [];
   let level1Result = [1, 2];
@@ -103,7 +107,26 @@ function doFoldingByFormula(power) {
       result = preLevelResult;
   }
 
-  return result;
+  return original ? _.map(result, number => original[number - 1]) : result;
+}
+
+/**
+ * Private method: reset internal states.
+ *
+ * @param FOF the folding service.
+ * @param original (optional) re-assign another initial sequence to the folding service.
+ *                 If omitted, use the sequence of natural numbers.
+ */
+function reset(FOF, original) {
+  assert(original === undefined || _.isArray(original) && original.length === FOF.count,
+    '`original` must be an array with ' + FOF.count + ' elements.\nYour `original` is: ' + original);
+
+  FOF.original = original ?
+                 _.cloneDeep(original) : // use a copy of the given array
+                 utils.generateNaturalSequence(FOF.count); // create [1, 2, ..., n]
+  FOF.final = FOF.original;
+  FOF.steps = [_.map(FOF.original, n => [n])];
+  FOF.computeDone = false; // expected to true when computing done.
 }
 
 /**
@@ -114,7 +137,7 @@ function doFoldingByFormula(power) {
  */
 Folding.prototype.init = function(forceReset) {
   if (forceReset === true) {
-    this.reset(this.original);
+    reset(this, this.original);
   }
 
   return this.original;
@@ -146,26 +169,6 @@ Folding.prototype.isComputeDone = function() {
 };
 
 /**
- * Private method: reset internal states.
- * ATTENTION: NOT RECOMMEND to call this method directly.
- * Keep this as a private method.
- *
- * @param original (optional) re-assign another initial sequence to the folding service.
- *                 If omitted, use the sequence of natural numbers.
- */
-Folding.prototype.reset = function(original) {
-  assert(original === undefined || _.isArray(original) && original.length === this.count,
-    '`original` must be an array with ' + this.count + ' elements.\nYour `original` is: ' + original);
-
-  this.original = original ?
-                 _.cloneDeep(original) : // use a copy of the given array
-                 Utils.generateNaturalSequence(this.count); // create [1, 2, ..., n]
-  this.final = this.original;
-  this.steps = [_.map(this.original, n => [n])];
-  this.computeDone = false; // expected to true when computing done.
-};
-
-/**
  * Give the result of the first order folding problem.
  *
  * Supported algorithm:
@@ -179,6 +182,9 @@ Folding.prototype.compute = function(algorithm) {
          '`algorithm` must be a flag defined in `Constants`, or it can be just omitted.\nYour algorithm: ' + algorithm);
 
   algorithm = algorithm || Constants.algorithm.RECURSIVE;
+  if (!this.cache[algorithm]) {
+    algorithm = Constants.algorithm.RECURSIVE;
+  }
   if (this.cache[algorithm].result) {
     this.final = this.cache[algorithm].result;
     this.steps = this.cache[algorithm].steps;
@@ -192,7 +198,7 @@ Folding.prototype.compute = function(algorithm) {
   let result = this.original;
   switch (algorithm) {
     case Constants.algorithm.FORMULA:
-      result = doFoldingByFormula(this.power);
+      result = doFoldingByFormula(this.power, this.original);
       break;
     case Constants.algorithm.RECURSIVE:
     default:
@@ -206,30 +212,36 @@ Folding.prototype.compute = function(algorithm) {
 };
 
 /**
- * Give the position of an original number in the final sequence.
+ * Function P(x): give the position of an original number in the final sequence.
  * You must run `compute()` first.
  *
- * @param x the original number from 1 to 2^k.
+ * @param x the original number from 1 to 2^k, or the object value in the original array.
  * @return {number} the position of an original number in the final sequence.
  */
 Folding.prototype.positionOf = function(x) {
+  if (_.isInteger(x)) {
+    assert(x >= 1 && x <= this.count, 'the number `x` must be between 1 and ' + this.count + '.\nYour number x is: ' + x);
+  } else {
+    assert(_.includes(this.original, x), 'the element `x` must exist in the `original` array.\n`original` is: ' + this.original + '\nYour `x` is: ' + x);
+  }
+
   if (!this.computeDone) return 1;
 
-  assert(typeof x === 'number' && x >= 1 && x <= this.count, 'the number `x` must be between 1 and ' + this.count + '\nYour number x is: ' + x);
   return _.indexOf(this.final, x) + 1;
 };
 
 /**
- * Give the number of position p in the final sequence.
+ * Function V(x): give the number of position p in the final sequence.
  * You must run `compute()` first.
  *
  * @param p the position in the final sequence.
  * @return {number | *} the value on the given position.
  */
 Folding.prototype.valueOf = function(p) {
+  assert(_.isInteger(p) && p >= 1 && p <= this.count, 'the position `p` must be between 1 and ' + this.count + '.\nYour position p is: ' + p);
+
   if (!this.computeDone) return 1;
 
-  assert(typeof p === 'number' && p >= 1 && p <= this.count, 'the position `p` must be between 1 and ' + this.count + '\nYour position p is: ' + p);
   return this.final[p - 1];
 };
 

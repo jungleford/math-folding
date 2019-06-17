@@ -14,6 +14,7 @@
     "math-folding",
     "algorithm"
   ],
+  "main": "lib/js",
   "scripts": {
     "compile": "babel --presets es2015,stage-0 -d lib/ src/",
     "build": "npm run compile && webpack --config ./webpack.babel.prod.js",
@@ -21,7 +22,7 @@
     "karma": "./node_modules/.bin/karma start --single-run"
   },
   "dependencies": {
-    "@jungleford/simple-utils": "~0.0.3",
+    "@jungleford/simple-utils": "~0.0.4",
     "babel-polyfill": "^6.26.0",
     "lodash": "^4.0.0"
   },

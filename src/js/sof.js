@@ -1,10 +1,12 @@
 import Constants from './constants';
-import Utils from '@jungleford/simple-utils/lib/js/utils';
 
 /**
  * Define a matrix [[1, 2, ..., 2^k], ..., [..., n]], that `n = 4 ^ k`, and a series of methods to compute folding result.
  * Here k is the `power`: given k=1, there are four numbers; given k=2, there are sixteen numbers; given k=3, there are
  * sixty-four numbers... etc.
+ *
+ * Supported algorithm:
+ *   recursive, formula
  *
  * @param power the exponent of the number of the elements.
  * @param original (optional) assign the initial matrix to the folding service.
@@ -23,7 +25,7 @@ function Folding(power, original, isFlat) {
   _.each(Constants.algorithm, alg => {
     this.cache[alg] = {};
   });
-  this.reset(original, isFlat);
+  reset(this, original, isFlat);
 }
 
 /**
@@ -296,28 +298,33 @@ function buildNrsMapping(power) {
  * This algorithm will not save steps.
  *
  * @param power the exponent of the number of the elements.
- * @param originalFlat the flatted original matrix, which should be a one-dimension array.
+ * @param originalFlat (Optional) the flatted original matrix, which should be a one-dimension array.
+ *                     If undefined, use the natural number sequence.
  * @return {number[]} the array of the folding result.
  */
 function doFoldingByFormula(power, originalFlat) {
-  assert(typeof power === 'number' && power >= 1, '`power` must larger than 1.\nYour power is: ' + power);
+  assert(_.isInteger(power) && power >= 1, '`power` must larger than 1.\nYour power is: ' + power);
+  if (originalFlat !== undefined) {
+    assert(_.isArray(originalFlat) && originalFlat.length === 4 ** power,
+      '`originalFlat` must be an array with ' + (4 ** power) + ' elements.\nYour `originalFlat` is: ' + originalFlat);
+  }
 
-  if (power === 1) {
-    return [originalFlat[0], originalFlat[2], originalFlat[3], originalFlat[1]]; // ordinary result for k=1
+  if (power === 1) { // ordinary result for k=1
+    return originalFlat ?
+           [originalFlat[0], originalFlat[2], originalFlat[3], originalFlat[1]] :
+           [1, 3, 4, 2];
   }
 
   let count = 4 ** power;
   let result = new Array(count);
   let currentPos = 1, nextPos = 1;
-  let v = 1; // v is a number in the natural sequence,
-             // or is an index of the original array.
-  result[currentPos - 1] = originalFlat[v - 1]; // place 1 (or the first object in the original array)
-                                                // to the first position in the result array.
+  result[currentPos - 1] = 1; // place 1 (or the first object in the original array)
+                              // to the first position in the result array.
 
   let rsg = buildRsgMapping(power); // Regular Segment Groups
   let nrs = buildNrsMapping(power); // Non-regular Segments
 
-  for (; v < count; v++) {
+  for (let v = 1; v < count; v++) {
     if (v % 2 === 1) {
       /*
        * Odd number
@@ -343,13 +350,44 @@ function doFoldingByFormula(power, originalFlat) {
       }
     }
 
-    result[nextPos - 1] = originalFlat[(v + 1) - 1]; // the succeeded number
+    result[nextPos - 1] = v + 1; // the succeeded number
     currentPos = nextPos; // move forward the pointer of current position
   }
 
-  return result;
+  return originalFlat ? _.map(result, number => originalFlat[number - 1]) : result;
 }
 //==== End of formula algorithm
+
+/**
+ * Private method: reset internal states.
+ *
+ * @param SOF the folding service.
+ * @param original (optional) re-assign another initial sequence to the folding service.
+ *                 If omitted, use the matrix of natural numbers.
+ * @param isFlat (optional) true if `original` is a one-dimension array.
+ */
+function reset(SOF, original, isFlat) {
+  assert(original === undefined || _.isArray(original) &&
+                                   (!isFlat && original.length === SOF.rowCount && original[0].length === SOF.rowCount ||
+                                    isFlat === true && original.length === SOF.count),
+    '`original` must be a matrix with ' + SOF.rowCount + '*' + SOF.rowCount + ' elements.\n' +
+    'Or an array with ' + SOF.count + ' elements.\n' +
+    'Your `original` is: ' + original);
+
+  if (original) {
+    let temp = _.cloneDeep(original); // use a copy of the given array/matrix
+    SOF.original = isFlat ? utils.arrayToMatrix(temp, SOF.count, SOF.rowCount) : temp;
+    SOF.originalFlat = isFlat ? temp : utils.matrixToArray(SOF.original);
+  } else {
+    // build up a two-dimension array [[1, 2, ..., 2k], ..., [..., n]]
+    SOF.original = utils.generateNaturalMatrix(SOF.rowCount);
+    SOF.originalFlat = utils.generateNaturalSequence(SOF.count);
+  }
+  SOF.final = SOF.original; // the final array is two-dimension
+  SOF.finalFlat = SOF.originalFlat;
+  SOF.steps = [_.map(SOF.final, row => _.map(row, number => [number]))];// steps is 4-dimension array
+  SOF.computeDone = false; // expected to true when computing done.
+}
 
 /**
  * Build the original array before computing.
@@ -359,7 +397,7 @@ function doFoldingByFormula(power, originalFlat) {
  */
 Folding.prototype.init = function(forceReset) {
   if (forceReset === true) {
-    this.reset(this.original);
+    reset(this, this.original);
   }
 
   return this.original;
@@ -398,36 +436,6 @@ Folding.prototype.isComputeDone = function() {
 };
 
 /**
- * Private method: reset internal states.
- * ATTENTION: NOT RECOMMEND to call this method directly.
- * Keep this as a private method.
- *
- * @param original (optional) re-assign another initial sequence to the folding service.
- *                 If omitted, use the matrix of natural numbers.
- * @param isFlat (optional) true if `original` is a one-dimension array.
- */
-Folding.prototype.reset = function(original, isFlat) {
-  assert(original === undefined || _.isArray(original) &&
-                                   (!isFlat && original.length === this.rowCount && original[0].length === this.rowCount ||
-                                    isFlat === true && original.length === this.count) ,
-    '`original` must be a matrix with ' + this.rowCount + '*' + this.rowCount + ' elements.\n' +
-    'Or an array with ' + this.count + ' elements.\n' +
-    'Your `original` is: ' + original);
-
-  if (original) {
-    let temp = _.cloneDeep(original); // use a copy of the given array/matrix
-    this.original = isFlat ? Utils.arrayToMatrix(temp, this.count, this.rowCount) : temp;
-  } else {
-    // build up a two-dimension array [[1, 2, ..., 2k], ..., [..., n]]
-    this.original = Utils.generateNaturalMatrix(this.rowCount);
-  }
-  this.final = this.original; // the final array is two-dimension
-  this.finalFlat = Utils.matrixToArray(this.original);
-  this.steps = [_.map(this.final, row => _.map(row, number => [number]))];// steps is 4-dimension array
-  this.computeDone = false; // expected to true when computing done.
-};
-
-/**
  * Give the result of the second order folding problem.
  *
  * @param algorithm (optional) By default, `recursive` is used.
@@ -438,6 +446,9 @@ Folding.prototype.compute = function(algorithm) {
          '`algorithm` must be a flag defined in `Constants`, or it can be just omitted.\nYour algorithm: ' + algorithm);
 
   algorithm = algorithm || Constants.algorithm.RECURSIVE;
+  if (!this.cache[algorithm]) {
+    algorithm = Constants.algorithm.RECURSIVE;
+  }
   if (this.cache[algorithm].result) {
     this.final = this.cache[algorithm].result;
     this.finalFlat = this.cache[algorithm].flat;
@@ -452,13 +463,13 @@ Folding.prototype.compute = function(algorithm) {
   let result = this.original;
   switch (algorithm) {
     case Constants.algorithm.FORMULA:
-      result = [doFoldingByFormula(this.power, Utils.matrixToArray(this.original))];
+      result = [doFoldingByFormula(this.power, utils.matrixToArray(this.original))];
       break;
     case Constants.algorithm.RECURSIVE:
     default:
       result = doFoldingByRecursive(this.steps[0], this.steps)[0];
   }
-  let finalFlat = Utils.matrixToArray(result);
+  let finalFlat = utils.matrixToArray(result);
   this.cache[algorithm].result = _.cloneDeep(result);
   this.cache[algorithm].flat = _.cloneDeep(finalFlat);
   this.cache[algorithm].steps = _.cloneDeep(this.steps);
@@ -469,30 +480,36 @@ Folding.prototype.compute = function(algorithm) {
 };
 
 /**
- * Give the position of an original number in the final sequence.
+ * Function P(x): give the position of an original number in the final sequence.
  * You must run `compute()` first.
  *
  * @param x the original number from 1 to 2^k.
  * @return {number} the position of an original number in the final sequence.
  */
 Folding.prototype.positionOf = function(x) {
+  if (_.isInteger(x)) {
+    assert(x >= 1 && x <= this.count, 'the number `x` must be between 1 and ' + this.count + '.\nYour number x is: ' + x);
+  } else {
+    assert(_.includes(this.originalFlat, x), 'the element `x` must exist in the `original` matrix.\nThe flatted `original` is: ' + this.originalFlat + '\nYour `x` is: ' + x);
+  }
+
   if (!this.computeDone) return 1;
 
-  assert(typeof x === 'number' && x >= 1 && x <= this.count, 'the number `x` must be between 1 and ' + this.count + '\nYour number x is: ' + x);
   return _.indexOf(this.finalFlat, x) + 1;
 };
 
 /**
- * Give the number of position p in the final sequence.
+ * Function V(x): give the number of position p in the final sequence.
  * You must run `compute()` first.
  *
  * @param p the position in the final sequence.
  * @return {number | *} the value on the given position.
  */
 Folding.prototype.valueOf = function(p) {
+  assert(_.isInteger(p) && p >= 1 && p <= this.count, 'the position `p` must be between 1 and ' + this.count + '.\nYour position p is: ' + p);
+
   if (!this.computeDone) return 1;
 
-  assert(typeof p === 'number' && p >= 1 && p <= this.count, 'the position `p` must be between 1 and ' + this.count + '\nYour position p is: ' + p);
   return this.finalFlat[p - 1];
 };
 

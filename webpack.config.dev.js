@@ -39,7 +39,8 @@ export default {
   plugins: [
     new webpack.ProvidePlugin({
       _: 'lodash',
-      assert: 'assert'
+      assert: 'assert',
+      utils: ['@jungleford/simple-utils', 'default']
     })
   ]
 };
