@@ -160,10 +160,10 @@ function buildRsgMapping(power) {
       addRegularSegment(rsg, unit, from, groupCount);
     } else {
       groupCount = 4;
-      for (let i = 0; i < 2 ** (level - 2); i++) {
+      for (let i = 1; i <= 2 ** (level - 2); i++) {
         addRegularSegment(rsg, unit, from, groupCount);
-        let t = i > 0 ? level - 3 : 0;
-        while (t > 0 && i > 0 && i % (2 ** t) !== 0) {
+        let t = level - 3;
+        while (t > 0 && i % (2 ** t) !== 0) {
           t--;
         }
         /*
