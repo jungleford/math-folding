@@ -1,4 +1,7 @@
 import Constants from './constants';
+import {Utils, Libs} from '@jungleford/simple-utils';
+const assert = Libs.assert;
+const _ = Libs._;
 
 /**
  * Define an array [1, 2, ..., n]` that `n = 2 ^ k`, and a series of methods to compute folding result.
@@ -123,7 +126,7 @@ function reset(FOF, original) {
 
   FOF.original = original ?
                  _.cloneDeep(original) : // use a copy of the given array
-                 utils.generateNaturalSequence(FOF.count); // create [1, 2, ..., n]
+                 Utils.generateNaturalSequence(FOF.count); // create [1, 2, ..., n]
   FOF.final = FOF.original;
   FOF.steps = [_.map(FOF.original, n => [n])];
   FOF.computeDone = false; // expected to true when computing done.

@@ -1,4 +1,7 @@
 import Constants from './constants';
+import {Utils, Libs} from '@jungleford/simple-utils';
+const assert = Libs.assert;
+const _ = Libs._;
 
 /**
  * Define a matrix [[1, 2, ..., 2^k], ..., [..., n]], that `n = 4 ^ k`, and a series of methods to compute folding result.
@@ -376,12 +379,12 @@ function reset(SOF, original, isFlat) {
 
   if (original) {
     let temp = _.cloneDeep(original); // use a copy of the given array/matrix
-    SOF.original = isFlat ? utils.arrayToMatrix(temp, SOF.count, SOF.rowCount) : temp;
-    SOF.originalFlat = isFlat ? temp : utils.matrixToArray(SOF.original);
+    SOF.original = isFlat ? Utils.arrayToMatrix(temp, SOF.count, SOF.rowCount) : temp;
+    SOF.originalFlat = isFlat ? temp : Utils.matrixToArray(SOF.original);
   } else {
     // build up a two-dimension array [[1, 2, ..., 2k], ..., [..., n]]
-    SOF.original = utils.generateNaturalMatrix(SOF.rowCount);
-    SOF.originalFlat = utils.generateNaturalSequence(SOF.count);
+    SOF.original = Utils.generateNaturalMatrix(SOF.rowCount);
+    SOF.originalFlat = Utils.generateNaturalSequence(SOF.count);
   }
   SOF.final = SOF.original; // the final array is two-dimension
   SOF.finalFlat = SOF.originalFlat;
@@ -463,13 +466,13 @@ Folding.prototype.compute = function(algorithm) {
   let result = this.original;
   switch (algorithm) {
     case Constants.algorithm.FORMULA:
-      result = [doFoldingByFormula(this.power, utils.matrixToArray(this.original))];
+      result = [doFoldingByFormula(this.power, Utils.matrixToArray(this.original))];
       break;
     case Constants.algorithm.RECURSIVE:
     default:
       result = doFoldingByRecursive(this.steps[0], this.steps)[0];
   }
-  let finalFlat = utils.matrixToArray(result);
+  let finalFlat = Utils.matrixToArray(result);
   this.cache[algorithm].result = _.cloneDeep(result);
   this.cache[algorithm].flat = _.cloneDeep(finalFlat);
   this.cache[algorithm].steps = _.cloneDeep(this.steps);
