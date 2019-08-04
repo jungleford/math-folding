@@ -24,6 +24,146 @@ var FOF = require('@jungleford/math-folding').FOF;
 var SOF = require('@jungleford/math-folding').SOF;
 ```
 
+### API
+
+#### First Ording Folding (FOF)
+
+<escape>
+<table>
+  <tr>
+    <th>Method</th>
+    <th colspan="2">Parameters</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td rowspan="2">Folding</td>
+    <td>power</td>
+    <td>(Required) The exponent of the number of the elements.</td>
+    <td rowspan="2">Constructor.</td>
+  </tr>
+  <tr>
+    <td>original</td>
+    <td>(Optional) Assign the initial sequence to the folding service. If omitted, use the sequence of natural numbers.</td>
+  </tr>
+  <tr>
+    <td>init</td>
+    <td>forceReset</td>
+    <td>(Optional) True if you want to reset all internal states when initiating.</td>
+    <td>Returns the original sequence.</td>
+  </tr>
+  <tr>
+    <td>getPower</td>
+    <td></td>
+    <td></td>
+    <td>Returns the power, i.e. the value of <b>k</b>.</td>
+  </tr>
+  <tr>
+    <td>getCount</td>
+    <td></td>
+    <td></td>
+    <td>Returns the total count of numbers, i.e. the value of <b>n</b>.</td>
+  </tr>
+  <tr>
+    <td>compute</td>
+    <td>algorithm</td>
+    <td>(Optional) The algorithm this service will use. Currently only "<b>recursive</b>" and "<b>formula</b>" are available. If omitted, "<b>recursive</b>" will be used.</td>
+    <td>The core process of FOF. User must call this method first to get the results.</td>
+  </tr>
+  <tr>
+    <td>positionOf</td>
+    <td>x</td>
+    <td>(Required) The original number from 1 to n, or the object value in the original array.</td>
+    <td>Returns the position of an original number or object in the final sequence. User must call <b>compute()</b> first.</td>
+  </tr>
+  <tr>
+    <td>valueOf</td>
+    <td>p</td>
+    <td>(Required) The position in the final sequence.</td>
+    <td>Returns the value on the given position. User must call <b>compute()</b> first.</td>
+  </tr>
+  <tr>
+    <td>getSteps</td>
+    <td></td>
+    <td></td>
+    <td>Returns all steps in the process of computation, this is a three-dimension array. Only avaiable for "<b>recursive</b>" algorithm.</td>
+  </tr>
+</table>
+</escape>
+
+#### Second Ording Folding (SOF)
+
+<escape>
+<table>
+  <tr>
+    <th>Method</th>
+    <th colspan="2">Parameters</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td rowspan="3">Folding</td>
+    <td>power</td>
+    <td>(Required) The exponent of the number of the elements.</td>
+    <td rowspan="3">Constructor.</td>
+  </tr>
+  <tr>
+    <td>original</td>
+    <td>(Optional) Assign the initial squre matrix to the folding service. This argument can be a matrix (two-dimension) or a sequence (one-dimension array). If omitted, use the sequence of natural numbers.</td>
+  </tr>
+  <tr>
+    <td>isFlat</td>
+    <td>(Optional) True if "original" is a sequence (one-dimension array).</td>
+  </tr>
+  <tr>
+    <td>init</td>
+    <td>forceReset</td>
+    <td>(Optional) True if you want to reset all internal states when initiating.</td>
+    <td>Returns the original matrix.</td>
+  </tr>
+  <tr>
+    <td>getPower</td>
+    <td></td>
+    <td></td>
+    <td>Returns the power, i.e. the value of <b>k</b>.</td>
+  </tr>
+  <tr>
+    <td>getCount</td>
+    <td></td>
+    <td></td>
+    <td>Returns the total count of numbers, i.e. the value of <b>n</b>.</td>
+  </tr>
+  <tr>
+    <td>getRowCount</td>
+    <td></td>
+    <td></td>
+    <td>Returns the rows count of the result matrix., i.e. the value of <b>2^k</b>.</td>
+  </tr>
+  <tr>
+    <td>compute</td>
+    <td>algorithm</td>
+    <td>(Optional) The algorithm this service will use. Currently only "<b>recursive</b>" and "<b>formula</b>" are available. If omitted, "<b>recursive</b>" will be used.</td>
+    <td>The core process of SOF. User must call this method first to get the results.</td>
+  </tr>
+  <tr>
+    <td>positionOf</td>
+    <td>x</td>
+    <td>(Required) The original number from 1 to n, or the object value in the original matrix.</td>
+    <td>Returns the position of an original number or object in the final sequence. User must call <b>compute()</b> first.</td>
+  </tr>
+  <tr>
+    <td>valueOf</td>
+    <td>p</td>
+    <td>(Required) The position in the final sequence.</td>
+    <td>Returns the value on the given position. User must call <b>compute()</b> first.</td>
+  </tr>
+  <tr>
+    <td>getSteps</td>
+    <td></td>
+    <td></td>
+    <td>Returns all steps in the process of computation, this is a three-dimension array. Only avaiable for "<b>recursive</b>" algorithm.</td>
+  </tr>
+</table>
+</escape>
+
 ## Algorithms
 
 Currently I only resolved First-Order Folding (FOF) and Second-Order Folding (SOF).
