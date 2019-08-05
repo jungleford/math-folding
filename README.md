@@ -67,7 +67,7 @@ var SOF = require('@jungleford/math-folding').SOF;
     <td>compute</td>
     <td>algorithm</td>
     <td>(Optional) The algorithm this service will use. Currently only "<b>recursive</b>" and "<b>formula</b>" are available. If omitted, "<b>recursive</b>" will be used.</td>
-    <td>The core process of FOF. User must call this method first to get the results.</td>
+    <td>Returns the final sequence (one-dimension array). The core process of FOF. This method will mutate the internal states. User must call this method first to get the results.</td>
   </tr>
   <tr>
     <td>positionOf</td>
@@ -141,7 +141,7 @@ var SOF = require('@jungleford/math-folding').SOF;
     <td>compute</td>
     <td>algorithm</td>
     <td>(Optional) The algorithm this service will use. Currently only "<b>recursive</b>" and "<b>formula</b>" are available. If omitted, "<b>recursive</b>" will be used.</td>
-    <td>The core process of SOF. User must call this method first to get the results.</td>
+    <td>Returns the final sequence (two-dimension array), and you should get the first member (i.e. <b>compute(alg)[0]</b>) as the result. The core process of SOF. This method will mutate the internal states. User must call this method first to get the results.</td>
   </tr>
   <tr>
     <td>positionOf</td>
