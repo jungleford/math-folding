@@ -442,9 +442,11 @@ Folding.prototype.isComputeDone = function() {
  * Give the result of the second order folding problem.
  *
  * @param algorithm (optional) By default, `recursive` is used.
+ * @param callback (optional) A function that allows you to do something else when computation is done,
+ *                 and this folding instance will be passed into the callback as an argument.
  * @return {number[][] | *[][]} the final folding result.
  */
-Folding.prototype.compute = function(algorithm) {
+Folding.prototype.compute = function(algorithm, callback) {
   assert(algorithm === undefined || typeof algorithm === 'string',
          '`algorithm` must be a flag defined in `Constants`, or it can be just omitted.\nYour algorithm: ' + algorithm);
 
@@ -479,6 +481,11 @@ Folding.prototype.compute = function(algorithm) {
   this.final = result;
   this.finalFlat = finalFlat;
   this.computeDone = true;
+
+  if (typeof callback === 'function') {
+    callback(this);
+  }
+
   return result;
 };
 

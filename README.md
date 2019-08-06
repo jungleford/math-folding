@@ -64,10 +64,14 @@ var SOF = require('@jungleford/math-folding').SOF;
     <td>Returns the total count of numbers, i.e. the value of <b>n</b>.</td>
   </tr>
   <tr>
-    <td>compute</td>
+    <td rowspan="2">compute</td>
     <td>algorithm</td>
     <td>(Optional) The algorithm this service will use. Currently only "<b>recursive</b>" and "<b>formula</b>" are available. If omitted, "<b>recursive</b>" will be used.</td>
-    <td>Returns the final sequence (one-dimension array). The core process of FOF. This method will mutate the internal states. User must call this method first to get the results.</td>
+    <td rowspan="2">Returns the final sequence (one-dimension array). The core process of FOF. This method will mutate the internal states. User must call this method first to get the results.</td>
+  </tr>
+  <tr>
+    <td>callback</td>
+    <td>(Optional) A function that allows you to do something else when computation is done, and this folding instance will be passed into the callback as an argument.</td>
   </tr>
   <tr>
     <td>positionOf</td>
@@ -138,10 +142,14 @@ var SOF = require('@jungleford/math-folding').SOF;
     <td>Returns the rows count of the result matrix., i.e. the value of <b>2^k</b>.</td>
   </tr>
   <tr>
-    <td>compute</td>
+    <td rowspan="2">compute</td>
     <td>algorithm</td>
     <td>(Optional) The algorithm this service will use. Currently only "<b>recursive</b>" and "<b>formula</b>" are available. If omitted, "<b>recursive</b>" will be used.</td>
-    <td>Returns the final sequence (two-dimension array), and you should get the first member (i.e. <b>compute(alg)[0]</b>) as the result. The core process of SOF. This method will mutate the internal states. User must call this method first to get the results.</td>
+    <td rowspan="2">Returns the final sequence (two-dimension array), and you should get the first member (i.e. <b>compute(alg)[0]</b>) as the result. The core process of SOF. This method will mutate the internal states. User must call this method first to get the results.</td>
+  </tr>
+  <tr>
+    <td>callback</td>
+    <td>(Optional) A function that allows you to do something else when computation is done, and this folding instance will be passed into the callback as an argument.</td>
   </tr>
   <tr>
     <td>positionOf</td>
