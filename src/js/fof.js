@@ -52,7 +52,7 @@ function doFoldingByRecursive(piles, steps) {
 
   // Merge the two halves
   _.each(firstHalf, (unit, index) => {
-    result.push(_.concat(unit, reversedLaterHalf[index]));
+    result.push([...unit, ...reversedLaterHalf[index]]);
   });
 
   // Save each step.

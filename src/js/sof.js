@@ -56,7 +56,7 @@ function doFoldingByRecursive(piles, steps) {
 
   // Merge the two halves
   _.each(firstHalf, (row, rowIndex) => {
-    let newFirstHalf = _.map(row, (unit, colIndex) => _.concat(unit, reversedLaterHalf[rowIndex][colIndex]));
+    let newFirstHalf = _.map(row, (unit, colIndex) => [...unit, ...reversedLaterHalf[rowIndex][colIndex]]);
     result1.push(newFirstHalf);
   });
 
@@ -79,7 +79,7 @@ function doFoldingByRecursive(piles, steps) {
     // Merge the two halves
     let nextTurnRows = [];
     _.each(firstHalfInRow, (unit, index) => {
-      nextTurnRows.push(_.concat(unit, reversedLaterHalfInRow[index]));
+      nextTurnRows.push([...unit, ...reversedLaterHalfInRow[index]]);
     });
     result2.push(nextTurnRows);
   });
@@ -220,7 +220,7 @@ function buildFactorsSequence(power) {
     });
   });
 
-  let factorsSequence = _.concat(evenFactorsSequence, oddFactorsSequence).sort((f1, f2) => f1.index - f2.index);
+  let factorsSequence = [...evenFactorsSequence, ...oddFactorsSequence].sort((f1, f2) => f1.index - f2.index);
 
   return _.map(factorsSequence, 'factor'); // pick up all factors by sorted indexes
 }
