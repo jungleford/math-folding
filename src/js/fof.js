@@ -118,15 +118,13 @@ function doFoldingByFormula(power, original) {
  *
  * @param FOF the folding service.
  * @param original (optional) re-assign another initial sequence to the folding service.
- *                 If omitted, use the sequence of natural numbers.
+ *                 If omitted, use the sequence of natural numbers [1, 2, ..., n].
  */
-function reset(FOF, original) {
+function reset(FOF, original = Utils.generateNaturalSequence(FOF.count)) {
   assert(original === undefined || _.isArray(original) && original.length === FOF.count,
     '`original` must be an array with ' + FOF.count + ' elements.\nYour `original` is: ' + original);
 
-  FOF.original = original ?
-                 _.cloneDeep(original) : // use a copy of the given array
-                 Utils.generateNaturalSequence(FOF.count); // create [1, 2, ..., n]
+  FOF.original = _.cloneDeep(original); // use a copy of the given array
   FOF.final = FOF.original;
   FOF.steps = [_.map(FOF.original, n => [n])];
   FOF.computeDone = false; // expected to true when computing done.
@@ -177,17 +175,17 @@ Folding.prototype.isComputeDone = function() {
  * Supported algorithm:
  *   recursive, formula
  *
- * @param algorithm (optional) By default, `recursive` is used.
+ * @param algorithm (optional) `recursive` or `formula`.
+ *                  By default, `recursive` is used.
  * @param callback (optional) A function that allows you to do something else when computation is done,
  *                 and this folding instance will be passed into the callback as an argument.
  * @return {number[] | *[]} the final folding result.
  */
-Folding.prototype.compute = function(algorithm, callback) {
+Folding.prototype.compute = function(algorithm = Constants.algorithm.RECURSIVE, callback) {
   assert(algorithm === undefined || typeof algorithm === 'string',
          '`algorithm` must be a flag defined in `Constants`, or it can be just omitted.\nYour algorithm: ' + algorithm);
 
-  algorithm = algorithm || Constants.algorithm.RECURSIVE;
-  if (!this.cache[algorithm]) {
+  if (!this.cache[algorithm]) { // If the given algorithm is not defined yet, use `recursive` instead.
     algorithm = Constants.algorithm.RECURSIVE;
   }
   if (this.cache[algorithm].result) {

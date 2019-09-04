@@ -366,10 +366,13 @@ function doFoldingByFormula(power, originalFlat) {
  *
  * @param SOF the folding service.
  * @param original (optional) re-assign another initial sequence to the folding service.
- *                 If omitted, use the matrix of natural numbers.
+ *                 If omitted, use the matrix of natural numbers,
+ *                 i.e. a two-dimension array [[1, 2, ..., 2k], ..., [..., n]].
  * @param isFlat (optional) true if `original` is a one-dimension array.
  */
-function reset(SOF, original, isFlat) {
+function reset(SOF,
+               original = Utils.generateNaturalMatrix(SOF.rowCount),
+               isFlat) {
   assert(original === undefined || _.isArray(original) &&
                                    (!isFlat && original.length === SOF.rowCount && original[0].length === SOF.rowCount ||
                                     isFlat === true && original.length === SOF.count),
@@ -377,15 +380,9 @@ function reset(SOF, original, isFlat) {
     'Or an array with ' + SOF.count + ' elements.\n' +
     'Your `original` is: ' + original);
 
-  if (original) {
-    let temp = _.cloneDeep(original); // use a copy of the given array/matrix
-    SOF.original = isFlat ? Utils.arrayToMatrix(temp, SOF.count, SOF.rowCount) : temp;
-    SOF.originalFlat = isFlat ? temp : Utils.matrixToArray(SOF.original);
-  } else {
-    // build up a two-dimension array [[1, 2, ..., 2k], ..., [..., n]]
-    SOF.original = Utils.generateNaturalMatrix(SOF.rowCount);
-    SOF.originalFlat = Utils.generateNaturalSequence(SOF.count);
-  }
+  let temp = _.cloneDeep(original); // use a copy of the given array/matrix
+  SOF.original = isFlat ? Utils.arrayToMatrix(temp, SOF.count, SOF.rowCount) : temp;
+  SOF.originalFlat = isFlat ? temp : Utils.matrixToArray(temp);
   SOF.final = SOF.original; // the final array is two-dimension
   SOF.finalFlat = SOF.originalFlat;
   SOF.steps = [_.map(SOF.final, row => _.map(row, number => [number]))];// steps is 4-dimension array
@@ -441,17 +438,17 @@ Folding.prototype.isComputeDone = function() {
 /**
  * Give the result of the second order folding problem.
  *
- * @param algorithm (optional) By default, `recursive` is used.
+ * @param algorithm (optional) `recursive` or `formula`.
+ *                  By default, `recursive` is used.
  * @param callback (optional) A function that allows you to do something else when computation is done,
  *                 and this folding instance will be passed into the callback as an argument.
  * @return {number[][] | *[][]} the final folding result.
  */
-Folding.prototype.compute = function(algorithm, callback) {
+Folding.prototype.compute = function(algorithm = Constants.algorithm.RECURSIVE, callback) {
   assert(algorithm === undefined || typeof algorithm === 'string',
          '`algorithm` must be a flag defined in `Constants`, or it can be just omitted.\nYour algorithm: ' + algorithm);
 
-  algorithm = algorithm || Constants.algorithm.RECURSIVE;
-  if (!this.cache[algorithm]) {
+  if (!this.cache[algorithm]) { // If the given algorithm is not defined yet, use `recursive` instead.
     algorithm = Constants.algorithm.RECURSIVE;
   }
   if (this.cache[algorithm].result) {
