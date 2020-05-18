@@ -1,6 +1,14 @@
-# math-folding ![npm (scoped)](https://img.shields.io/npm/v/@jungleford/math-folding.svg)
+# math-folding: 对折序列问题（Number Folding Problem） ![npm (scoped)](https://img.shields.io/npm/v/@jungleford/math-folding.svg)
 
 Research for number folding algorithms.
+
+The detailed analysis is [here](https://github.com/jungleford/math-folding/tree/master/docs/index.md). (**Chinese edition only**)
+
+## Related Projects
+
+* [math-folding-react](https://github.com/jungleford/math-folding-react): Web UI to represent the algorithm by using [React JS](https://github.com/facebook/react) and [Material UI](https://github.com/mui-org/material-ui).
+* [math-folding-wechat](https://github.com/jungleford/math-folding-wechat): A mobile UI working on WeiXin mini program (微信小程序).
+* [simple-utils](https://github.com/jungleford/simple-utils): A set of simple utilities for internal usage.
 
 ## Install
 
@@ -201,13 +209,3 @@ or
 ```bash
 $ npm run karma
 ```
-
-## Related Projects
-
-* [math-folding-react](https://github.com/jungleford/math-folding-react): Web UI to represent the algorithm by using [React JS](https://github.com/facebook/react) and [Material UI](https://github.com/mui-org/material-ui).
-* [math-folding-wechat](https://github.com/jungleford/math-folding-wechat): A mobile UI working on WeiXin mini program (微信小程序).
-* [simple-utils](https://github.com/jungleford/simple-utils): A set of simple utilities for internal usage.
-
-# Background: 对折序列问题（Number Folding Problem）
-
-The detailed analysis is [here](https://github.com/jungleford/math-folding/tree/master/docs/index.md). (**Chinese edition only**)
