@@ -2,7 +2,7 @@
 
 Research for number folding algorithms.
 
-The detailed analysis is [here](https://github.com/jungleford/math-folding/tree/master/docs/index.md). (**Chinese edition only**)
+The detailed analysis is [here](https://github.com/jungleford/math-folding-doc). (**Chinese edition only**)
 
 ## Related Projects
 
